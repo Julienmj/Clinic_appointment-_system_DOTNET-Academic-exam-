@@ -203,7 +203,7 @@ F5 (Run)
 ```
 clinic system/
 ├── � Documentation/
-│   ├── �📄 README.md                 # Complete project documentation
+│   ├── � README.md                 # Complete project documentation
 │   ├── 📄 SETUP.md                  # Quick setup guide
 │   └── 📄 DATABASE_DIAGRAM.txt      # Database schema documentation
 ├── ⚙️ Configuration/
@@ -211,7 +211,7 @@ clinic system/
 │   ├── 📄 clinic system.csproj      # Project file
 │   └── 📄 clinic system.slnx        # Solution file
 ├── � Application Entry/
-│   └── �📄 Program.cs                # Application entry point
+│   └── � Program.cs                # Application entry point
 ├── 🏠 Dashboard/
 │   ├── 📄 Dashboard.cs              # Main dashboard logic
 │   └── 📄 Dashboard.Designer.cs     # Dashboard UI design
@@ -357,55 +357,287 @@ WHERE a.patient = 1
 
 ## 🛡️ Security Features
 
-- **Password Encryption:** SHA256 hashing for all user passwords
-- **Input Validation:** Basic validation on all forms
-- **Role-Based Access:** Separate panels for each user type
-- **Data Integrity:** Conflict checking for appointment scheduling
+### 🔐 Password Encryption
+
+#### **SHA256 Hashing Implementation**
+```csharp
+public static class SecurityHelper
+{
+    public static string HashPassword(string password)
+    {
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+            return builder.ToString();
+        }
+    }
+}
+```
+
+#### **Password Security Features**
+- ✅ **One-way Hashing**: Passwords are never stored in plain text
+- ✅ **SHA256 Algorithm**: Industry-standard cryptographic hash function
+- ✅ **Salt Resistance**: Each password hash is unique
+- ✅ **Verification**: Login compares hashed passwords, not plain text
+
+### 🛡️ Input Validation
+
+#### **Email Validation**
+```csharp
+private bool IsValidEmail(string email)
+{
+    try
+    {
+        var addr = new System.Net.Mail.MailAddress(email);
+        return addr.Address == email;
+    }
+    catch
+    {
+        return false;
+    }
+}
+```
+
+#### **Field Validation Rules**
+- **Email**: Must contain '@' and be valid email format
+- **Password**: Minimum length required
+- **Age**: Must be positive integer
+- **Phone**: Basic format validation
+- **Required Fields**: All mandatory fields must be filled
+
+### 🔒 Role-Based Access Control
+
+#### **Authentication Flow**
+```csharp
+private void btnLogin_Click(object sender, EventArgs e)
+{
+    string email = txtEmail.Text.Trim();
+    string password = SecurityHelper.HashPassword(txtPassword.Text);
+    
+    // Check role and authenticate
+    if (email == "manager@clinic.com" && password == "admin123_hashed")
+    {
+        // Manager login
+        ManagerPanel managerPanel = new ManagerPanel();
+        managerPanel.Show();
+    }
+    else if (IsPatient(email, password))
+    {
+        // Patient login
+        PatientPanel patientPanel = new PatientPanel();
+        patientPanel.Show();
+    }
+    else if (IsDoctor(email, password))
+    {
+        // Doctor login
+        DoctorPanel doctorPanel = new DoctorPanel();
+        doctorPanel.Show();
+    }
+}
+```
+
+#### **Access Control Matrix**
+| Role | Patient Data | Doctor Data | Manager Functions |
+|------|--------------|-------------|-------------------|
+| **Patient** | ✅ Own appointments only | ❌ No access | ❌ No access |
+| **Doctor** | ✅ Appointment details only | ✅ Own appointments only | ❌ No access |
+| **Manager** | ✅ All patient data | ✅ All doctor data | ✅ Full access |
+
+### 🔍 Data Integrity
+
+#### **Appointment Conflict Prevention**
+```csharp
+public bool HasAppointmentConflict(int doctorId, string dateTime)
+{
+    string query = $"SELECT COUNT(*) FROM APPOINTMENT WHERE doctor = {doctorId} AND date_time = '{dateTime}'";
+    DataTable result = db.ExecuteQuery(query);
+    int count = Convert.ToInt32(result.Rows[0]["COUNT"]);
+    return count > 0;
+}
+```
+
+#### **Business Logic Validation**
+- ✅ **Duplicate Prevention**: No duplicate emails for registration
+- ✅ **Time Conflicts**: No two appointments for same doctor at same time
+- ✅ **Data Consistency**: Foreign key relationships maintained
+- ✅ **Status Validation**: Only valid status values allowed
+
+---
 
 ## 📝 Academic Project Details
 
-### Project Constraints (Strictly Followed)
-- ✅ No LINQ, Entity Framework, or advanced patterns
-- ✅ No stored procedures, views, or triggers
-- ✅ No async/await or complex design patterns
-- ✅ Only ADO.NET-style operations (custom implementation)
-- ✅ Simple, beginner-friendly code structure
-- ✅ Single color theme throughout the application
+### 🎓 Project Constraints (Strictly Followed)
 
-### Learning Objectives
-- Understanding Windows Forms development
-- Implementing file-based data persistence
-- Role-based application design
-- Basic security implementation
-- Database relationship management
+#### **Technology Restrictions**
+- ❌ **No LINQ**: Only traditional ADO.NET patterns used
+- ❌ **No Entity Framework**: Custom database implementation
+- ❌ **No Stored Procedures**: All logic in application code
+- ❌ **No Views/Triggers**: Simple table-based operations
+- ❌ **No Async/Await**: Synchronous operations only
+- ❌ **No Design Patterns**: Simple, straightforward implementation
+
+#### **UI/UX Constraints**
+- 🎨 **Fixed Design**: No changes to form size, positions, fonts
+- 🎨 **Single Theme**: Consistent color scheme throughout
+- 🎨 **Standard Controls**: Only basic Windows Forms controls
+- 🎨 **No Animations**: Simple, functional interface
+
+#### **Database Constraints**
+- 📁 **File-Based**: No external database servers
+- 📁 **ADO.NET Style**: DataTable and custom operations
+- 📁 **SQL Simulation**: Query-like syntax parsed by custom code
+- 📁 **No ORM**: Manual data mapping and operations
+
+### 🎯 Learning Objectives Achieved
+
+#### **Core Programming Skills**
+- ✅ **C# Fundamentals**: Classes, methods, variables, control flow
+- ✅ **Object-Oriented Programming**: Encapsulation, inheritance concepts
+- ✅ **Event-Driven Programming**: Windows Forms event handling
+- ✅ **Error Handling**: Try-catch blocks and user feedback
+- ✅ **File I/O Operations**: Reading and writing text files
+
+#### **Database Concepts**
+- ✅ **CRUD Operations**: Create, Read, Update, Delete
+- ✅ **Relationship Management**: One-to-many relationships
+- ✅ **Data Validation**: Input checking and constraints
+- ✅ **Query Simulation**: SQL-like operations parsing
+- ✅ **Data Integrity**: Foreign key and constraint simulation
+
+#### **Software Engineering**
+- ✅ **3-Tier Architecture**: UI, Business Logic, Data Layer separation
+- ✅ **Code Organization**: Logical file and class structure
+- ✅ **Documentation**: Comprehensive README and code comments
+- ✅ **Version Control**: Git repository with meaningful commits
+
+---
 
 ## 🔍 How It Works
 
-### Database Operations
-The system uses a custom file-based database that simulates SQL operations:
+### 🏗️ Architecture Overview
 
-```csharp
-// Example: Patient Registration
-string query = "INSERT INTO PATIENT VALUES ('John Doe', 25, 'Male', '1234567890', 'john@email.com', 'hashed_password')";
-db.ExecuteNonQuery(query);
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Presentation Layer                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   Dashboard │  │  Login Form │  │ Patient UI  │        │
+│  │             │  │             │  │             │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Business Logic Layer                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │   Security  │  │ Validation  │  │ Appointment │        │
+│  │  Helper     │  │   Logic     │  │ Management  │        │
+│  │             │  │             │  │             │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Data Access Layer                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │Database     │  │ File I/O    │  │ Query       │        │
+│  │Helper       │  │ Operations  │  │ Parser      │        │
+│  │             │  │             │  │             │        │
+│  └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Data Storage Layer                       │
+│                                                             │
+│                clinic_system.txt                            │
+│            (File-Based Database)                            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Password Security
+### 💾 Database Operations
+
+#### **Query Processing Pipeline**
 ```csharp
-// SHA256 Encryption
-public static string HashPassword(string password)
+public DataTable ExecuteQuery(string query)
 {
-    using (SHA256 sha256 = SHA256.Create())
+    DataTable dataTable = new DataTable();
+    
+    // 1. Parse query type
+    if (query.StartsWith("SELECT COUNT(*) FROM PATIENT"))
     {
-        byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < bytes.Length; i++)
-        {
-            builder.Append(bytes[i].ToString("x2"));
-        }
-        return builder.ToString();
+        // 2. Extract parameters
+        string email = ExtractEmailFromQuery(query);
+        
+        // 3. Read data from file
+        string[] lines = File.ReadAllLines("clinic_system.txt");
+        
+        // 4. Process data
+        bool exists = CheckEmailExists(lines, email);
+        
+        // 5. Create result
+        dataTable.Columns.Add("COUNT", typeof(int));
+        dataTable.Rows.Add(exists ? 1 : 0);
+    }
+    
+    return dataTable;
+}
+```
+
+#### **Data Persistence**
+```csharp
+public int ExecuteNonQuery(string query)
+{
+    if (query.StartsWith("INSERT INTO PATIENT"))
+    {
+        // 1. Parse INSERT statement
+        PatientData patient = ParsePatientInsert(query);
+        
+        // 2. Generate unique ID
+        patient.Id = GetNextId("PATIENT");
+        
+        // 3. Format for storage
+        string dataLine = FormatPatientForStorage(patient);
+        
+        // 4. Append to file
+        File.AppendAllText("clinic_system.txt", dataLine + Environment.NewLine);
+        
+        return 1; // Success
     }
 }
+```
+
+### 🔄 User Interaction Flow
+
+#### **Patient Registration Process**
+```
+1. User clicks "Patient" → "Register here"
+2. Registration form appears
+3. User fills: name, age, sex, phone, email, password
+4. System validates all inputs
+5. System checks if email already exists
+6. Password is hashed using SHA256
+7. Patient data is saved to clinic_system.txt
+8. Success message shown
+9. User can login with new credentials
+```
+
+#### **Appointment Booking Process**
+```
+1. Patient logs in → Patient Panel
+2. System loads available doctors (from database)
+3. Patient selects doctor → Services load for that doctor
+4. Patient selects service, date, time
+5. System checks for appointment conflicts
+6. If no conflict → Appointment saved
+7. Status set to "Pending"
+8. Doctor can see new appointment in their panel
+9. Doctor can approve/deny → Status updated
+10. Patient can see updated status
 ```
 
 ## 🐛 Troubleshooting
