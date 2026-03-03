@@ -202,70 +202,158 @@ F5 (Run)
 
 ```
 clinic system/
-├── 📄 README.md                 # This file
-├── 📄 DATABASE_DIAGRAM.txt      # Database schema documentation
-├── 📄 App.config                # Application configuration
-├── 📄 clinic system.csproj      # Project file
-├── 📄 Program.cs                # Application entry point
-├── 🏠 Dashboard/                # Main dashboard form
-│   ├── Dashboard.cs
-│   └── Dashboard.Designer.cs
-├── 🔐 Authentication/           # Login and registration forms
-│   ├── LoginForm.cs
-│   ├── LoginForm.Designer.cs
-│   ├── RegisterForm.cs
-│   └── RegisterForm.Designer.cs
-├── 👤 Patient Panel/            # Patient functionality
-│   ├── PatientPanel.cs
-│   └── PatientPanel.Designer.cs
-├── 👨‍⚕️ Doctor Panel/           # Doctor functionality
-│   ├── DoctorPanel.cs
-│   └── DoctorPanel.Designer.cs
-├── 📊 Manager Panel/            # Manager functionality
-│   ├── ManagerPanel.cs
-│   └── ManagerPanel.Designer.cs
-├── 🔧 Utilities/                # Helper classes
-│   ├── DatabaseHelper.cs        # File-based database operations
-│   └── SecurityHelper.cs        # Password encryption
-└── 📁 Properties/               # Project properties
-    ├── AssemblyInfo.cs
-    ├── Resources.Designer.cs
-    ├── Settings.Designer.cs
-    └── Settings.settings
+├── � Documentation/
+│   ├── �📄 README.md                 # Complete project documentation
+│   ├── 📄 SETUP.md                  # Quick setup guide
+│   └── 📄 DATABASE_DIAGRAM.txt      # Database schema documentation
+├── ⚙️ Configuration/
+│   ├── 📄 App.config                # Application configuration
+│   ├── 📄 clinic system.csproj      # Project file
+│   └── 📄 clinic system.slnx        # Solution file
+├── � Application Entry/
+│   └── �📄 Program.cs                # Application entry point
+├── 🏠 Dashboard/
+│   ├── 📄 Dashboard.cs              # Main dashboard logic
+│   └── 📄 Dashboard.Designer.cs     # Dashboard UI design
+├── 🔐 Authentication/
+│   ├── 📄 LoginForm.cs              # Login form logic
+│   ├── 📄 LoginForm.Designer.cs     # Login UI design
+│   ├── 📄 RegisterForm.cs           # Patient registration logic
+│   └── 📄 RegisterForm.Designer.cs  # Registration UI design
+├── 👤 Patient Panel/
+│   ├── 📄 PatientPanel.cs           # Patient functionality
+│   └── 📄 PatientPanel.Designer.cs  # Patient UI design
+├── 👨‍⚕️ Doctor Panel/
+│   ├── 📄 DoctorPanel.cs            # Doctor functionality
+│   └── 📄 DoctorPanel.Designer.cs   # Doctor UI design
+├── 📊 Manager Panel/
+│   ├── 📄 ManagerPanel.cs           # Manager functionality
+│   └── 📄 ManagerPanel.Designer.cs  # Manager UI design
+├── 🔧 Utilities/
+│   ├── 📄 DatabaseHelper.cs         # File-based database operations
+│   └── 📄 SecurityHelper.cs         # Password encryption utilities
+└── 📁 Properties/                   # Project properties
+    ├── 📄 AssemblyInfo.cs           # Assembly information
+    ├── 📄 Resources.Designer.cs     # Resource file designer
+    ├── 📄 Resources.resx            # Application resources
+    ├── 📄 Settings.Designer.cs      # Settings file designer
+    └── 📄 Settings.settings         # Application settings
 ```
+
+---
 
 ## 🗄️ Database Design
 
-### File-Based Database System
-- **Storage:** `clinic_system.txt` (auto-created)
-- **Format:** Structured text file with comma-separated values
-- **Advantages:** No installation required, portable, beginner-friendly
+### 📊 File-Based Database System
 
-### Tables Structure
+#### **Database Overview**
+- **Storage**: `clinic_system.txt` (auto-created on first run)
+- **Format**: Structured text file with comma-separated key-value pairs
+- **Advantages**: 
+  - ✅ No external database server required
+  - ✅ Zero installation and configuration
+  - ✅ Portable - single file backup
+  - ✅ Beginner-friendly and transparent
 
-#### PATIENT
-- `patient_id` (Primary Key)
-- `fullname`, `age`, `sex`, `telephone`
-- `email` (Unique), `password` (SHA256 Hashed)
+#### **Data Format Example**
+```
+PATIENT:id:1,fullname:John Doe,age:30,sex:Male,telephone:1234567890,email:john@email.com,password:a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3
+DOCTOR:id:1,fullname:Dr. Smith,email:smith@clinic.com,password:5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+SERVICE:id:1,service_name:General Checkup,doctor:1
+APPOINTMENT:id:1,patient:1,doctor:1,service:1,datetime:2024-01-15 10:00:00,status:Pending
+```
 
-#### DOCTOR  
-- `doctor_id` (Primary Key)
-- `fullname`, `email` (Unique), `password` (SHA256 Hashed)
+### 📋 Database Schema
 
-#### SERVICE
-- `service_id` (Primary Key)
-- `service_name`, `doctor` (Foreign Key → DOCTOR)
+#### **PATIENT Table**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `patient_id` | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique patient identifier |
+| `fullname` | TEXT | NOT NULL | Patient's full name |
+| `age` | INTEGER | NOT NULL | Patient's age |
+| `sex` | TEXT | NOT NULL | Gender (Male/Female) |
+| `telephone` | TEXT | NOT NULL | Contact phone number |
+| `email` | TEXT | UNIQUE NOT NULL | Email address (login) |
+| `password` | TEXT | NOT NULL | SHA256 hashed password |
 
-#### APPOINTMENT
-- `appointment_id` (Primary Key)
-- `patient`, `doctor`, `service` (Foreign Keys)
-- `date_time`, `status` (Pending/Approved/Denied)
+#### **DOCTOR Table**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `doctor_id` | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique doctor identifier |
+| `fullname` | TEXT | NOT NULL | Doctor's full name |
+| `email` | TEXT | UNIQUE NOT NULL | Email address (login) |
+| `password` | TEXT | NOT NULL | SHA256 hashed password |
 
-### Relationships
-- PATIENT 1:M APPOINTMENT
-- DOCTOR 1:M APPOINTMENT  
-- DOCTOR 1:M SERVICE
-- SERVICE 1:M APPOINTMENT
+#### **SERVICE Table**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `service_id` | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique service identifier |
+| `service_name` | TEXT | NOT NULL | Name of medical service |
+| `doctor` | INTEGER | FOREIGN KEY → DOCTOR.doctor_id | Assigned doctor |
+
+#### **APPOINTMENT Table**
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `appointment_id` | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique appointment identifier |
+| `patient` | INTEGER | FOREIGN KEY → PATIENT.patient_id | Patient ID |
+| `doctor` | INTEGER | FOREIGN KEY → DOCTOR.doctor_id | Doctor ID |
+| `service` | INTEGER | FOREIGN KEY → SERVICE.service_id | Service ID |
+| `date_time` | TEXT | NOT NULL | Appointment date and time |
+| `status` | TEXT | DEFAULT 'Pending' | Appointment status |
+
+### 🔗 Entity Relationship Diagram
+
+```
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│    PATIENT      │       │   APPOINTMENT   │       │     DOCTOR      │
+│─────────────────┤       │─────────────────┤       │─────────────────┤
+│ patient_id (PK) │◄──────│ appointment_id │──────►│ doctor_id (PK)  │
+│ fullname        │       │ patient (FK)    │       │ fullname        │
+│ age             │       │ doctor (FK)     │       │ email           │
+│ sex             │       │ service (FK)    │       │ password        │
+│ telephone       │       │ date_time       │       └─────────────────┘
+│ email           │       │ status          │                │
+│ password        │       └─────────────────┘                │
+└─────────────────┘                │                         │
+         │                        │                         │
+         └────────────────────────┼─────────────────────────┘
+                                  │
+                         ┌─────────────────┐
+                         │     SERVICE     │
+                         │─────────────────┤
+                         │ service_id (PK) │
+                         │ service_name    │
+                         │ doctor (FK)     │
+                         └─────────────────┘
+```
+
+### 🔄 Database Operations
+
+#### **Supported Operations**
+- ✅ **CREATE**: Insert new records (patients, doctors, services, appointments)
+- ✅ **READ**: Query records with filtering and joins
+- ✅ **UPDATE**: Modify existing records (appointment status, details)
+- ✅ **DELETE**: Remove records (appointment cancellation)
+- ✅ **JOIN**: Simulated SQL joins for related data retrieval
+- ✅ **AGGREGATE**: Count operations for conflict checking
+
+#### **Query Examples**
+```csharp
+// Patient Registration
+INSERT INTO PATIENT VALUES ('John Doe', 30, 'Male', '1234567890', 'john@email.com', 'hashed_password')
+
+// Doctor Login Verification
+SELECT doctor_id, fullname FROM DOCTOR WHERE email = 'doctor@clinic.com' AND password = 'hashed_password'
+
+// Appointment Booking with Conflict Check
+SELECT COUNT(*) FROM APPOINTMENT WHERE doctor = 1 AND date_time = '2024-01-15 10:00:00'
+
+// Patient Appointment History
+SELECT a.appointment_id, d.fullname, s.service_name, a.date_time, a.status 
+FROM APPOINTMENT a JOIN DOCTOR d ON a.doctor = d.doctor_id 
+JOIN SERVICE s ON a.service = s.service_id 
+WHERE a.patient = 1
+```
 
 ## 🛡️ Security Features
 
