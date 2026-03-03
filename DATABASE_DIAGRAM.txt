@@ -1,0 +1,47 @@
+HOSPITAL APPOINTMENT REQUEST SYSTEM - DATABASE DIAGRAM (SQLite)
+==========================================================
+
+TABLE: PATIENT
+- patient_id (PK, INTEGER, PRIMARY KEY AUTOINCREMENT)
+- fullname (TEXT NOT NULL)
+- age (INTEGER NOT NULL)
+- sex (TEXT NOT NULL)
+- telephone (TEXT NOT NULL)
+- email (TEXT UNIQUE NOT NULL)
+- password (TEXT NOT NULL)
+
+TABLE: DOCTOR
+- doctor_id (PK, INTEGER, PRIMARY KEY AUTOINCREMENT)
+- fullname (TEXT NOT NULL)
+- email (TEXT UNIQUE NOT NULL)
+- password (TEXT NOT NULL)
+
+TABLE: SERVICE
+- service_id (PK, INTEGER, PRIMARY KEY AUTOINCREMENT)
+- service_name (TEXT NOT NULL)
+- doctor (FK → DOCTOR.doctor_id, INTEGER NOT NULL)
+
+TABLE: APPOINTMENT
+- appointment_id (PK, INTEGER, PRIMARY KEY AUTOINCREMENT)
+- patient (FK → PATIENT.patient_id, INTEGER NOT NULL)
+- doctor (FK → DOCTOR.doctor_id, INTEGER NOT NULL)
+- service (FK → SERVICE.service_id, INTEGER NOT NULL)
+- date_time (TEXT NOT NULL)
+- status (TEXT DEFAULT 'Pending')
+
+RELATIONSHIPS:
+PATIENT 1 --- M APPOINTMENT
+DOCTOR 1 --- M APPOINTMENT
+DOCTOR 1 --- M SERVICE
+SERVICE 1 --- M APPOINTMENT
+
+DATABASE FILE: clinic_system.db (SQLite)
+CONNECTION STRING: Data Source=clinic_system.db;Version=3;
+
+NOTES:
+- All passwords are stored as SHA256 hashes
+- Status values: 'Pending', 'Approved', 'Denied'
+- Conflict checking: No two appointments for same doctor at same date_time
+- Manager login: email='manager@clinic.com', password='admin123' (hardcoded)
+- Database is automatically created on first run
+- Uses System.Data.SQLite library

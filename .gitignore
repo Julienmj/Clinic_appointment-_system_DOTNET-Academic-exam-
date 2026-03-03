@@ -1,0 +1,48 @@
+# Visual Studio files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NuGet packages
+packages/
+*.nupkg
+
+# Database file (created at runtime)
+clinic_system.txt
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code files
+.vscode/
+
+# Application specific files
+*.log
+*.tmp
